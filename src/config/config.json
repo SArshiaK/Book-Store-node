@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "shoping",
+    "host": "192.168.2.248",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "shoping",
+    "host": "192.168.2.248",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "shoping",
+    "host": "192.168.2.248",
+    "dialect": "mysql"
+  }
+}
