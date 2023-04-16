@@ -3,10 +3,10 @@ const authorService = require('../../services/author/author.service');
 async function httpGetAllAuthors(req, res){
     try {
         const authors = await authorService.getAll();
-        res.status(200).json({success: "true", authors});
+        res.status(200).json({success: "true", message: "OK" ,data: authors});
       } catch (err) {
         const errMessage = err.message;
-        res.status(400).json({success: "false", errMessage})
+        res.status(400).json({success: "false", message: errMessage})
       } 
 }
 
@@ -14,28 +14,20 @@ async function httpCreateAuthor(req, res){
     const name = req.body.name;
     try {
         const createdAuthor = await authorService.createAuthor(name);
-        res.status(201).json({success: "true", createdAuthor});
+        res.status(201).json({success: "true", message: "Author created", data:createdAuthor});
       } catch (err) {
         const errMessage = err.message;
-        res.status(400).json({success: "false", errMessage});
+        res.status(400).json({success: "false", message: errMessage});
       } 
 }
 
 async function httpDeleteAuthor(req, res){
     const name = req.body.name;
 
-    // const result = await authorService.deleteAuthor(name);
-    // if(result === 1){
-    //     res.status(201).json({success: 'true'});
-    // }
-    // else if(result === 0){
-    //     res.status(400).json({success: 'false'});
-    // }
-
     try {
         const result = await authorService.deleteAuthor(name);
         if(result === 1)
-            res.status(201).json({success: 'true'});
+            res.status(201).json({success: 'true' , message: "Author deleted"});
         else
             res.status(404).json({success: 'false', message: 'Author Not Found'});
       }
@@ -51,13 +43,13 @@ async function httpDeleteAuthorById(req, res){
     try {
         const result = await authorService.deleteAuthorById(id);
         if(result === 1)
-            res.status(201).json({success: 'true'});
+            res.status(201).json({success: 'true', message: "Author deleted"});
         else
             res.status(404).json({success: 'false', message: 'Author Not Found'});
       }
       catch(err) {
         const errMessage =  err.message;
-        res.status(400).json({success: 'false', errMessage});
+        res.status(400).json({success: 'false', message: errMessage});
       }
 }
 
@@ -67,10 +59,10 @@ async function httpUpdateAuthor(req, res){
 
     try {
         await authorService.updateAuthor(id, name);
-        res.status(201).json({success: 'true'});
+        res.status(201).json({success: 'true', message: "Author updated", });
     } catch (err) {
         const errMessage =  err.message;
-        res.status(400).json({success: 'false', errMessage});
+        res.status(400).json({success: 'false', message: errMessage});
     }
 }
 
