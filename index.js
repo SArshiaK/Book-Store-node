@@ -25,22 +25,22 @@ const app = express();
 
 app.use(express.json());
 
-sequelize.sync(
-)
+sequelize.sync()
   .then( () => console.log("conncted to database") )
   .catch( (err) => console.log("connection failed", err) );
 
 
 app.use('/', authorsRouter);
 app.use('/', groupsRouter);
-app.use('/', validate(loginValidation, {}, {}), userRouter);
+app.use('/', validate(loginValidation, {keyByField: true}, {}), userRouter);
 
 app.use(function(err, req, res, next) {
   if (err instanceof ValidationError) {
-    return res.status(err.statusCode).json({success: false, message: err.details.body[0].message});
+    return res.status(err.statusCode).json({success: false, message: err.details[0]});
   }
 
-  return res.status(500).json({success: false, message: err.details.body[0].message});
+  return res.status(500).json({success: false, message: err.details[0]});
+
 })
 
 app.listen(3000, () => {
