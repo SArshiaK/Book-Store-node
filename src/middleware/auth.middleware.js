@@ -22,7 +22,9 @@ const requireAuth = (req, res, next) => {
         }
 
         const user = await User.findOne({ where: { id: decodedToken['id']} });
-
+        if(!user){
+            return res.status(400).send({ success: false, message: "User not found" });
+        }
         if(user.active === false){
             return res.status(400).send({ success: false, message: "User is blocked" });
         }
