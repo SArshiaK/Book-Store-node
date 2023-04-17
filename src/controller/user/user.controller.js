@@ -7,9 +7,10 @@ async function httpSignUp(req, res){
 
         Object.assign(user.dataValues, {token: token});
 
+        delete user.dataValues.password;
         res.status(201).json({success: true, message: 'signed up', data:user});
     } catch (error) {
-        res.status(400).json({success: 'false', message: error.errors[0].message});
+        res.status(400).json({success: 'false', message: error.errors[0]['message']});
         console.log(error);
     }
 }
@@ -28,6 +29,7 @@ async function httpLogin(req, res){
             res.status(403).json({success: 'false', message: {data}});
         }
         else {
+            delete data.password;
             res.status(201).json({success: 'true', message: 'loged in', data: data});
         }
     } catch (error) {

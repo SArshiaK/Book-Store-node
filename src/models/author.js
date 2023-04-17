@@ -5,7 +5,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Author extends Model{
         static associate(models){
-
+            
         }
     }
     Author.init({

@@ -5,7 +5,6 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Book extends Model{
         static associate(models){
-            Book.belongsTo(models.Bgconnector, {foreignKey: 'bgconnectorId', onUpdate: 'cascade', onDelete: 'cascade'});
             Book.belongsTo(models.Author, {foreignKey: 'authorId', onUpdate: 'cascade', onDelete: 'cascade'});
         }
     }

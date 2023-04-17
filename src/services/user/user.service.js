@@ -23,7 +23,6 @@ async function signUp(userName, password, fullName, email){
 
     const token = createToken(userName, user.id);
 
-
     return {token, user};
 }
 
@@ -37,11 +36,15 @@ async function login(userName, password){
         where: {
             userName: userName
         } });
+        
     if(user){
         const result = await comparePassword(password, user.password);
-        console.log(result);
         if(result){
-            return user.dataValues;
+            const token = createToken(userName, user.id);
+            const data = user.dataValues;
+            Object.assign(data, {token: token});
+
+            return data;
         }
         else{
             return 'password is wrong';
