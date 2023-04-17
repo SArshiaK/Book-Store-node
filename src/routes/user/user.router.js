@@ -11,7 +11,8 @@ const { requireAuth } = require('../../middleware/auth.middleware');
 const userController = require('../../controller/user/user.controller');
 
 userRouter.post('/signup', validate(signupValidation, {keyByField: true}, {}), userController.httpSignUp);
-userRouter.post('/login', validate(loginValidation, {keyByField: true}, {}), requireAuth, userController.httpLogin);
+userRouter.post('/login', validate(loginValidation, {keyByField: true}, {}), userController.httpLogin);
+userRouter.get('/users', requireAuth, userController.httpGetAllUsers);
 
 userRouter.use(function(err, req, res, next) {
   if (err instanceof ValidationError) {

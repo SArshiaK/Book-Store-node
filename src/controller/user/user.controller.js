@@ -37,9 +37,25 @@ async function httpLogin(req, res){
     }
 }
 
+async function httpGetAllUsers(req, res){
+    try {
+        const users = await userService.getAllUsers();
+
+        Object.keys(users).forEach((key) => {
+            const user = users[key];
+            delete user.dataValues.password;
+        });
+
+        res.status(200).json({success: true, message: 'OK', data: users});
+
+    } catch (error) {
+        res.status(400).json({success: 'false', message: error.message}); 
+    }
+}
 
 module.exports = {
     httpSignUp,
-    httpLogin
+    httpLogin,
+    httpGetAllUsers
 
 }

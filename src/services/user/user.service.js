@@ -43,7 +43,7 @@ async function login(userName, password){
             const token = createToken(userName, user.id);
             const data = user.dataValues;
             Object.assign(data, {token: token});
-
+            
             return data;
         }
         else{
