@@ -1,43 +1,40 @@
 const jwt = require('jsonwebtoken');
+const { User } = require('../models');
+
+async function findUser(id){
+    
+}
 
 const requireAuth = (req, res, next) => {
     const token = req.headers.token;
 
-    if (token) {
-        jwt.verify(token, 'secret', (err, decodedToken) => {
-            if (err) {
-                console.log(err.message);
-                res.status(400).send({success: false, message: err.message});
-            } else {
-                console.log(decodedToken);
-                next();
-            }
-        });
-    } else {
+
+    if (!token) {
         console.log('token does not exist');
-        res.status(400).send({success: false, message: 'token does not exist'});
+        return res.status(400).send({ success: false, message: 'token does not exist' });
     }
+
+    jwt.verify(token, 'secret', async (err, decodedToken) => {
+
+        if (err) {
+            console.log(err.message);
+            return res.status(400).send({ success: false, message: err.message });
+        }
+
+        const user = await User.findOne({ where: { id: decodedToken['id']} });
+
+        if(user.active === false){
+            return res.status(400).send({ success: false, message: "User is blocked" });
+        }
+
+        console.log(decodedToken);
+        req.decodedToken = decodedToken;
+        next();
+
+    });
+
 };
 
-// const checkUser = (req, res, next) => {
-//     const token = req.headers.token;
-//     next();
-//     if (token) {
-//         jwt.verify(token, 'secret', async (err, decodedToken) => {
-//             if (err) {
-//                 console.log(err.message);
-//                 res.locals.user = null;
-//                 next();
-//             } else {
-//                 console.log(decodedToken);
-//                 next();
-//             }
-//         });
-//     } else {
-//         res.locals.user = null;
-//         next();
-//     }
-// };
 
 module.exports = {
     requireAuth,

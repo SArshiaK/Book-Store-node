@@ -1,15 +1,16 @@
 const express = require('express');
 
-authorsRouter = express.Router();
+const authorsRouter = express.Router();
 
 const authorsController = require('../../controller/author/author.controller');
 
-authorsRouter.get('/authors', authorsController.httpGetAllAuthors);
-authorsRouter.get('/authors/:id', authorsController.httpFindAuthorById);
-authorsRouter.post('/authors', authorsController.httpCreateAuthor);
-authorsRouter.delete('/authors', authorsController.httpDeleteAuthor);
-authorsRouter.delete('/authors/:id', authorsController.httpDeleteAuthorById);
-authorsRouter.patch('/authors/:id', authorsController.httpUpdateAuthor);
+
+authorsRouter.get('/', authorsController.httpGetAllAuthors);
+authorsRouter.get('/:id', authorsController.httpFindAuthorById);
+authorsRouter.post('/' , authorsController.httpCreateAuthor);
+authorsRouter.delete('/', authorsController.httpDeleteAuthor);
+authorsRouter.delete('/:id', authorsController.httpDeleteAuthorById);
+authorsRouter.patch('/:id', authorsController.httpUpdateAuthor);
 
 
 

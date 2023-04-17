@@ -1,15 +1,15 @@
 const express = require('express');
 
-groupsRouter = express.Router();
+const groupsRouter = express.Router();
 
 const groupsController = require('../../controller/group/group.controller');
 
-groupsRouter.get('/groups', groupsController.httpGetAllGroups);
-groupsRouter.get('/groups/:id', groupsController.httpFindGroupById);
-groupsRouter.post('/groups', groupsController.httpCreateGroup);
-groupsRouter.delete('/groups', groupsController.httpDeleteGroup);
-groupsRouter.delete('/groups/:id', groupsController.httpDeleteGroupById);
-groupsRouter.patch('/groups/:id', groupsController.httpUpdateGroup);
+groupsRouter.get('/', groupsController.httpGetAllGroups);
+groupsRouter.get('/:id', groupsController.httpFindGroupById);
+groupsRouter.post('/', groupsController.httpCreateGroup);
+groupsRouter.delete('/', groupsController.httpDeleteGroup);
+groupsRouter.delete('/:id', groupsController.httpDeleteGroupById);
+groupsRouter.patch('/:id', groupsController.httpUpdateGroup);
 
 
 
