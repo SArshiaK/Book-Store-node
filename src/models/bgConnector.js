@@ -5,7 +5,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Bgconnector extends Model{
         static associate(models){
-            Bgconnector.belongsTo(models.Book, {foreignKey: 'bookId', onUpdate: 'cascade', onDelete: 'cascade'});
+            Bgconnector.belongsTo(models.Book, {foreignKey: 'BookId', onUpdate: 'cascade', onDelete: 'cascade'});
             Bgconnector.belongsTo(models.Group, {foreignKey: 'groupId', onUpdate: 'cascade', onDelete: 'cascade'});
 
         }
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             type: DataTypes.INTEGER
           },
-        bookId: {
+        BookId: {
             allowNull: false,
             type: DataTypes.INTEGER,
         },

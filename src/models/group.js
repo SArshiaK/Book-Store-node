@@ -5,7 +5,6 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Group extends Model{
         static associate(models){
-
         }
     }
     Group.init({

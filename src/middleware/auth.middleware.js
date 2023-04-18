@@ -25,12 +25,12 @@ const requireAuth = (req, res, next) => {
         if(!user){
             return res.status(400).send({ success: false, message: "User not found" });
         }
-        if(user.active === false){
+        if(!user.active){
             return res.status(400).send({ success: false, message: "User is blocked" });
         }
 
         console.log(decodedToken);
-        req.decodedToken = decodedToken;
+        req.User = user;
         next();
 
     });

@@ -6,6 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     class Book extends Model{
         static associate(models){
             Book.belongsTo(models.Author, {foreignKey: 'authorId', onUpdate: 'cascade', onDelete: 'cascade'});
+            Book.hasMany(models.Bgconnector, {as: 'connections'});
+            Book.hasOne(models.Group)
         }
     }
     Book.init({
@@ -35,10 +37,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.DATE,
         },
-        bgconnectorId:{
-            allowNull: false,
-            type: DataTypes.INTEGER
-        },
         authorId:{
             allowNull: false,
             type: DataTypes.INTEGER
@@ -46,7 +44,6 @@ module.exports = (sequelize, DataTypes) => {
 
     },
     {
-
         sequelize,
         modelName: 'Book',
     });

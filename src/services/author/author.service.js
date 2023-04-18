@@ -27,7 +27,7 @@ async function deleteAuthorById(id){
 }
 
 async function updateAuthor(id, name){
-    Author.update(
+    await Author.update(
         { authorName: name },
         { where: { id: id } }
       )
