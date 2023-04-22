@@ -11,20 +11,21 @@ async function httpGetAllBooks(req, res) {
 
 async function httpCreateBook(req, res) {
     const params = req.body;
-
     try {
         const book = await bookService.createBook(params.title, params.description, params.price, params.stock, params.publishDAte, params.authorId);
         res.status(201).json({ success: true, message: 'book created', data: book });
-    } catch (error) {
-        res.status(400).json({ success: false, message: 'عملیات با خطا مواجه شد' });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
     }
 }
 
-async function httpSearchByTitle(req, res) {
-    const title = req.body.title;
+async function httpSearchBook(req, res) {
+    const text = req.body.text;
+    const price = req.body.price;
+    const groupName = req.body.groupName
 
     try {
-        const books = await bookService.searchByTitle(title);
+        const books = await bookService.searchBook(text, price, groupName);
         res.status(200).json({ success: true, message: 'OK', data: books });
     } catch (err) {
         res.status(400).json({ success: true, message: 'عملیات با خطا مواجه شد' });
@@ -61,7 +62,7 @@ async function httpDeleteById(req, res) {
 module.exports = {
     httpGetAllBooks,
     httpCreateBook,
-    httpSearchByTitle,
+    httpSearchBook,
     httpFilterByGroup,
     httpDeleteById
 }

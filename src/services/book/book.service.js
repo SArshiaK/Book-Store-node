@@ -40,7 +40,13 @@ async function createBook(title, description = '', price, stock, publishDAte, au
     return book.dataValues;
 }
 
-async function searchByTitle(title){
+async function searchBook(text='', price = [0, 9999999], groupName = ''){
+    const title = text;
+    const description = text;
+    const minPrice = price[0];
+    const maxPrice = price[1]
+    const group = groupName
+
     const books = await Book.findAll({
         include: [{
             attributes: ['id'],
@@ -50,15 +56,20 @@ async function searchByTitle(title){
                 include: [{
                     attributes: ['id', 'groupName'],
                     model: Group,
-                    required: true
+                    required: true,
                 },
                 ]
         }],
-        where:{
-            title: {
-                [Op.like]: `%${title}%`,
-            }
-        }
+        where: {
+            [Op.and]: [
+                {[Op.or]: [
+                    { title: { [Op.like]: `%${title}%` }},
+                    { description: { [Op.like]: `%${description}%` }},
+                ]},
+                { price: {[Op.between]: [minPrice, maxPrice] }},
+                { '$connections.Group.groupName$': group},
+            ]
+          }
     })
 
     return books;
@@ -104,7 +115,7 @@ async function deleteBookById(bookId){
 module.exports = {
     getAllBooks,
     createBook,
-    searchByTitle,
+    searchBook,
     filterByGroup,
     deleteBookById
 }

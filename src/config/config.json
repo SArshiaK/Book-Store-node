@@ -3,21 +3,21 @@
     "username": "root",
     "password": null,
     "database": "shoping",
-    "host": "192.168.2.248",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
     "password": null,
     "database": "shoping",
-    "host": "192.168.2.248",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
     "password": null,
     "database": "shoping",
-    "host": "192.168.2.248",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   }
 }

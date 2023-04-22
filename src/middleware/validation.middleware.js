@@ -25,7 +25,20 @@ const loginValidation = {
   })
 }
 
+const createCustomerValidation = {
+  body: Joi.object({
+    customerName: Joi.string()
+      .required(),
+    phoneNumber: Joi.string()
+      .regex(/^[0]?[9][0-9]{9}$/)
+      .required(),
+    address: Joi.string()
+      .required(),
+  })
+}
+
 module.exports = {
   signupValidation,
-  loginValidation
+  loginValidation,
+  createCustomerValidation
 }
