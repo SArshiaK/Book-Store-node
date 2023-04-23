@@ -31,5 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'IdetailConnector',
     });
+
+
     return IdetailConnector;
 }

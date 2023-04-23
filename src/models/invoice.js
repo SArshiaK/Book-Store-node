@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     class Invoice extends Model{
         static associate(models){
             Invoice.hasOne(models.CiConnector, {foreignKey: 'invoiceId', as: 'invId'});
-            Invoice.hasMany(models.IdetailConnector, {foreignKey: 'invoiceId', as: 'invoiId'});
+            Invoice.hasMany(models.IdetailConnector, {foreignKey: 'invoiceId', as: 'connections'});
             
         }
     }
@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         invoiceNumber: {
             allowNull: false,
+            unique: true,
             type: DataTypes.INTEGER
         },
         netPrice: {

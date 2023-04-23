@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 async function getAllBooks() {
-    const books = Book.findAll({
+    const books = await Book.findAll({
         include: [
             {
                 attributes: ['id'],
@@ -67,7 +67,15 @@ async function searchBook(text='', price = [0, 9999999], groupName = ''){
                     { description: { [Op.like]: `%${description}%` }},
                 ]},
                 { price: {[Op.between]: [minPrice, maxPrice] }},
-                { '$connections.Group.groupName$': group},
+                {
+                    [Op.or]: [
+                        { 
+                            '$connections.Group.groupName$': { [Op.like]: `%${group}%` },
+                            // '$connections.Group.groupName$': {[Op.is]: null}
+                        }, 
+                    ]     
+                }
+                
             ]
           }
     })
