@@ -40,7 +40,48 @@ async function getAllInvoices(){
     return invoices
 }
 
+async function deleteInvoice(invoiceId){
+    
+    const invoiceDetails = await InvoiceDetail.findAll({
+        where: {
+            invoiceId: invoiceId
+        }
+    })
+    invoiceDetails.forEach(async (invoiceDetail) => {
+        console.log(invoiceDetail);
+        const book = await Book.findOne({ where: { id: invoiceDetail.BookId } });
+        await book.increment('stock', {by: invoiceDetail.quantity});
+    }) 
+
+    await Invoice.destroy({
+        where: {
+            id: invoiceId
+        }
+    })
+}
+
+async function updateInvoice(invoiceId, customerId = null, date = null, paymentType=null){
+    const invoice = await Invoice.findOne({where: {id: invoiceId}});
+    if(customerId === null)
+        customerId = invoice.CustomerId
+    if(date === null)
+        date = invoice.date
+    if(paymentType === null)
+    paymentType = invoice.paymentType
+
+    const updatedInvoice = await Invoice.update(
+        {
+            CustomerId: customerId,
+            date: date,
+            paymentType: paymentType
+        },
+        {where: {id: invoiceId}}
+    )
+}
+
 module.exports = {
     createInvoice,
-    getAllInvoices
+    getAllInvoices,
+    deleteInvoice,
+    updateInvoice
 }
