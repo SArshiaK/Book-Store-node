@@ -1,4 +1,6 @@
 const { Customer } = require("../../models");
+const {Invoice} = require('../../models');
+const{InvoiceDetail} = require('../../models')
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -6,6 +8,18 @@ const Op = Sequelize.Op;
 async function getCustomers(customerName = null) {
     if (customerName != null) {
         const customers = Customer.findAll({
+            include: [
+                {   
+                    model: Invoice,
+                    as: 'invoices',
+                    required: false,
+                    include: [{
+                        model: InvoiceDetail,
+                        required: true,
+                    },
+                    ]
+                },
+            ],
             where: {
                 customerName: {
                     [Op.like]: `%${customerName}%`,
@@ -15,12 +29,25 @@ async function getCustomers(customerName = null) {
         return customers
     }
     else{
-        return Customer.findAll();
+        return Customer.findAll({
+            include: [
+                {   
+                    model: Invoice,
+                    as: 'invoices',
+                    required: false,
+                    include: [{
+                        model: InvoiceDetail,
+                        required: true,
+                    },
+                    ]
+                },
+            ],
+        });
     }
 }
 
-async function createCustomer(customerName, phoneNumber, address) {
-    const customer = await Customer.create({ customerName, phoneNumber, address });
+async function createCustomer(userId, customerName, phoneNumber, address) {
+    const customer = await Customer.create({UserId:userId, customerName, phoneNumber, address });
     return customer.dataValues;
 }
 

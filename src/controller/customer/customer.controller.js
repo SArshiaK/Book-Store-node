@@ -16,9 +16,10 @@ async function httpGetCustomers(req, res){
 }
 
 async function httpCreateCustomer(req, res){
+    const user = req.User;
     const params = req.body;
     try {
-        const createdCustomer = await customerService.createCustomer(params.customerName, params.phoneNumber, params.address);
+        const createdCustomer = await customerService.createCustomer(user.id, params.customerName, params.phoneNumber, params.address);
         res.status(201).json({success: "true", message: "Customer created", data:createdCustomer});
       } catch (err) {
         const errMessage = err.message;

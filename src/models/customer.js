@@ -5,7 +5,8 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Customer extends Model{
         static associate(models){
-            Customer.hasMany(models.CiConnector);
+            Customer.hasMany(models.Invoice, {as: 'invoices'});
+            Customer.belongsTo(models.User, {foreignKey: 'UserId', onUpdate: 'cascade', onDelete: 'cascade'})
         }
     }
     Customer.init({
@@ -15,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             type: DataTypes.INTEGER
           },
+        UserId: {
+            allowNull: false,
+            type: DataTypes.INTEGER,
+        },
         customerName: {
             allowNull: false,
             type: DataTypes.STRING,

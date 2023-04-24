@@ -5,6 +5,8 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class InvoiceDetail extends Model{
         static associate(models){
+            InvoiceDetail.belongsTo(models.Invoice, {foreignKey: 'invoiceId', onUpdate: 'cascade', onDelete: 'cascade'});
+            InvoiceDetail.belongsTo(models.Book, {foreignKey: 'BookId', onUpdate: 'cascade', onDelete: 'cascade'});
         }
     }
     InvoiceDetail.init({
@@ -14,7 +16,11 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             type: DataTypes.INTEGER
           },
-        bookId: {
+        BookId: {
+            allowNull: false,
+            type: DataTypes.INTEGER
+        },
+        invoiceId: {
             allowNull: false,
             type: DataTypes.INTEGER
         },

@@ -5,9 +5,10 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Invoice extends Model{
         static associate(models){
-            Invoice.hasOne(models.CiConnector, {foreignKey: 'invoiceId', as: 'invId'});
-            Invoice.hasMany(models.IdetailConnector, {foreignKey: 'invoiceId', as: 'connections'});
-            
+            // Invoice.hasOne(models.CiConnector, {foreignKey: 'invoiceId', as: 'invId'});
+            Invoice.belongsTo(models.Customer, {foreignKey: 'CustomerId', as: 'invoices', onUpdate: 'cascade', onDelete: 'cascade'});
+            Invoice.hasMany(models.InvoiceDetail, {foreignKey: 'invoiceId'});
+
         }
     }
     Invoice.init({
@@ -18,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
           },
         userId: {
+            allowNull: false,
+            type: DataTypes.INTEGER,
+        },
+        CustomerId: {
             allowNull: false,
             type: DataTypes.INTEGER,
         },

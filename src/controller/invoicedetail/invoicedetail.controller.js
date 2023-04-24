@@ -13,9 +13,9 @@ async function httpCreateInvoiceDetail(req, res){
     const params  = req.body
     if(!params.discount)
         params.discount = 0
-    console.log(params.discount)
+    // console.log(params.discount)
     try {
-        const invoiceDetail = await invoiceService.createInvoiceDetail(params.bookId, params.row, params.quantity, params.discount);
+        const invoiceDetail = await invoiceService.createInvoiceDetail(params.bookId, params.invoiceId, params.quantity, params.discount);
         if(invoiceDetail === 'The requested quantity is greater than the stock')
             return res.status(400).json({success: false, message: 'The requested quantity is greater than the stock'});
         else if(invoiceDetail === 'Book not found')
@@ -26,7 +26,20 @@ async function httpCreateInvoiceDetail(req, res){
     }
 }
 
+async function httpDeleteInvoiceDetail(req, res){
+    const invoiceDetailId = req.params.id
+
+    try {
+        await invoiceService.deleteInvoiceDetail(invoiceDetailId);
+        res.status(201).json({success: true, message: 'Invoice detail deleted'});
+    } catch (err) {
+        // console.log(err)
+        res.status(400).json({success: false, message: err})
+    }
+}
+
 module.exports = {
     httpGetAllInvoiceDetailes,
-    httpCreateInvoiceDetail
+    httpCreateInvoiceDetail,
+    httpDeleteInvoiceDetail
 }

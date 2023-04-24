@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models){
             Book.belongsTo(models.Author, {foreignKey: 'authorId', onUpdate: 'cascade', onDelete: 'cascade'});
             Book.hasMany(models.Bgconnector, {as: 'connections'});
+            Book.hasMany(models.InvoiceDetail);
             Book.hasOne(models.Group)
         }
     }

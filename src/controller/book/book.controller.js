@@ -28,7 +28,8 @@ async function httpSearchBook(req, res) {
         const books = await bookService.searchBook(text, price, groupName);
         res.status(200).json({ success: true, message: 'OK', data: books });
     } catch (err) {
-        res.status(400).json({ success: true, message: 'عملیات با خطا مواجه شد' });
+        console.log(err)
+        res.status(400).json({ success: true, message: err });
     }
 }
 

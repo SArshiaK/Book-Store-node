@@ -6,5 +6,7 @@ const invoicedetailController = require('../../controller/invoicedetail/invoiced
 
 invoicedetailRouter.get('/', invoicedetailController.httpGetAllInvoiceDetailes);
 invoicedetailRouter.post('/', invoicedetailController.httpCreateInvoiceDetail);
+invoicedetailRouter.delete('/:id', invoicedetailController.httpDeleteInvoiceDetail);
+
 
 module.exports = invoicedetailRouter
