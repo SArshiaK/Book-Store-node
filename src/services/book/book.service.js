@@ -28,6 +28,10 @@ async function getAllBooks() {
     return books;
 }
 
+async function getBookById(bookId) {
+    return await Book.findOne({ where: { id: bookId } });
+}
+
 async function createBook(title, description = '', price, stock, publishDAte, authorId) {
     const book = await Book.create({
         title: title,
@@ -68,7 +72,7 @@ async function searchBook(text = '', price = [0, 9999999], groupName = '') {
     //             ]},
     //             { price: {[Op.between]: [minPrice, maxPrice] }},
     //             {   
-                                 
+
     //                 [Op.or]: [
     //                     { 
     //                         // (group && { '$connections.Group.groupName$': group },),
@@ -109,57 +113,58 @@ async function searchBook(text = '', price = [0, 9999999], groupName = '') {
             { price: { [Op.between]: [minPrice, maxPrice] } },
         ]
     }
-    if (group != '' && group != null){
-        whereObj[Op.and].push({'$connections.Group.groupName$': group})
+    if (group != '' && group != null) {
+        whereObj[Op.and].push({ '$connections.Group.groupName$': group })
     }
     const books = await Book.findAll({
         include: [includeObj],
         where: [whereObj]
-      })
-    return books; 
+    })
+    return books;
 }
-    
-    async function filterByGroup(groupName) {
-        console.log(groupName);
-        const books = Book.findAll({
-            include: [
-                {
-                    attributes: ['id'],
-                    model: Bgconnector,
-                    as: 'connections',
+
+async function filterByGroup(groupName) {
+    console.log(groupName);
+    const books = Book.findAll({
+        include: [
+            {
+                attributes: ['id'],
+                model: Bgconnector,
+                as: 'connections',
+                required: true,
+                include: [{
+                    attributes: ['id', 'groupName'],
+                    model: Group,
                     required: true,
-                    include: [{
-                        attributes: ['id', 'groupName'],
-                        model: Group,
-                        required: true,
-                        where: {
-                            groupName: groupName
-                        }
-                    },
-                    ],
-
+                    where: {
+                        groupName: groupName
+                    }
                 },
-            ],
+                ],
 
-        });
+            },
+        ],
 
-        return books;
-    }
+    });
 
-    async function deleteBookById(bookId) {
-        const result = await Book.destroy({
-            where: {
-                id: bookId,
-            }
-        })
+    return books;
+}
 
-        return result;
-    }
+async function deleteBookById(bookId) {
+    const result = await Book.destroy({
+        where: {
+            id: bookId,
+        }
+    })
 
-    module.exports = {
-        getAllBooks,
-        createBook,
-        searchBook,
-        filterByGroup,
-        deleteBookById
-    }
+    return result;
+}
+
+module.exports = {
+    getAllBooks,
+    getBookById,
+    createBook,
+    searchBook,
+    filterByGroup,
+    deleteBookById
+}

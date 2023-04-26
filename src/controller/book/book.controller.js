@@ -60,8 +60,19 @@ async function httpDeleteById(req, res) {
     }
 }
 
+async function httpGetBookById(req, res){
+    const bookId = req.params.id
+    try {
+        const book = await bookService.getBookById(bookId);
+        res.status(200).json({success: true, message: 'OK', data: book})
+    } catch (err) {
+        res.status(400).json({success: false, message: 'عملیات با خطا مواجه شد'});
+    }
+}
+
 module.exports = {
     httpGetAllBooks,
+    httpGetBookById,
     httpCreateBook,
     httpSearchBook,
     httpFilterByGroup,

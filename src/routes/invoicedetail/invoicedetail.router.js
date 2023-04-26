@@ -4,9 +4,11 @@ const invoicedetailRouter = express.Router();
 
 const invoicedetailController = require('../../controller/invoicedetail/invoicedetail.controller');
 
-invoicedetailRouter.get('/', invoicedetailController.httpGetAllInvoiceDetailes);
-invoicedetailRouter.post('/', invoicedetailController.httpCreateInvoiceDetail);
+invoicedetailRouter.get('/:id', invoicedetailController.httpGetInvoiceDetailesByInvoiceId);
+invoicedetailRouter.post('/:id', invoicedetailController.httpCreateInvoiceDetail);
 invoicedetailRouter.delete('/:id', invoicedetailController.httpDeleteInvoiceDetail);
+invoicedetailRouter.patch('/:id', invoicedetailController.httpUpdateInvoiceDetail);
+
 
 
 module.exports = invoicedetailRouter

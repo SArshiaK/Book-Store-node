@@ -5,6 +5,7 @@ const booksRouter = express.Router();
 const  bookController = require('../../controller/book/book.controller');
 
 booksRouter.get('/', bookController.httpGetAllBooks);
+booksRouter.get('/:id', bookController.httpGetBookById);
 booksRouter.post('/', bookController.httpCreateBook);
 booksRouter.post('/search', bookController.httpSearchBook);
 booksRouter.post('/filter', bookController.httpFilterByGroup);

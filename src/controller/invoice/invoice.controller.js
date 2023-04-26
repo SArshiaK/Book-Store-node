@@ -13,6 +13,20 @@ async function httpGetAllInvoices(req, res){
     }
 }
 
+async function httpGetInvoiceById(req, res){
+    const invoiceId = req.params.id;
+    console.log(invoiceId)
+
+    try {
+        const invoice = await invoiceService.getInvoiceById(invoiceId); 
+        res.status(200).json({success: true, message: 'OK', data: invoice});
+    } catch (err) {
+        console.log(err)
+
+        res.status(400).json({success: false, message: err.message});
+    }
+}
+
 async function httpCreateInvoice(req, res){
     const user = req.User;
     const params = req.body;
@@ -30,8 +44,8 @@ async function httpCreateInvoice(req, res){
 async function httpDeleteInvoice(req, res){
     const invoiceId = req.params.id;
     try {
-        await invoiceService.deleteInvoice(invoiceId);
-        res.status(201).json({success: true, message: 'Invoice Deleted'})
+        const x = await invoiceService.deleteInvoice(invoiceId);
+        res.status(201).json({success: true, message: 'Invoice Deleted', data: x})
     } catch (err) {
         console.log(err)
         res.status(400).json({success: false, message: err.message});
@@ -43,7 +57,7 @@ async function httpUpdateInvoice(req, res){
     const params = req.body
     try {
         const updatedInvoice = await invoiceService.updateInvoice(invoiceId, params.customerId, params.date, params.paymentType);
-        res.status(201).json({success: true, message: 'Invoice Updated', data: updatedInvoice})
+        res.status(201).json({success: true, message: 'Invoice Updated'})
     } catch (err) {
         res.status(400).json({success: true, message: err.message})
     }
@@ -51,6 +65,7 @@ async function httpUpdateInvoice(req, res){
 
 module.exports = {
     httpCreateInvoice,
+    httpGetInvoiceById,
     httpGetAllInvoices,
     httpDeleteInvoice,
     httpUpdateInvoice

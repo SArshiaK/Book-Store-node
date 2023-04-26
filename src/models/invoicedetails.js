@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
     InvoiceDetail.beforeCreate(async (invoicedetail, options) => {
         const totalPrice =(( invoicedetail.quantity * invoicedetail.unitPrice ) * (100 - invoicedetail.discount))/100;
         invoicedetail.totalPrice = totalPrice;
-        console.log(totalPrice)
+        // console.log(totalPrice)
       });
 
     return InvoiceDetail;
