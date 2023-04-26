@@ -49,7 +49,7 @@ async function createInvoiceDetail(bookId, invoiceId, quantity, discount) {
         return invoicedetail;
 
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         await t.rollback();
         return err;
     }
