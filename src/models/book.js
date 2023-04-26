@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             Book.hasMany(models.Bgconnector, {as: 'connections'});
             Book.hasMany(models.InvoiceDetail);
             Book.hasOne(models.Group)
+            Book.hasMany(models.Discount);
         }
     }
     Book.init({

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const { User } = require('../../models');
 
-const maxAge = 24 * 60 * 60;
+const maxAge = 5*24 * 60 * 60;
 
 function createToken(userName, id){
     return jwt.sign({userName, id}, 'secret', {

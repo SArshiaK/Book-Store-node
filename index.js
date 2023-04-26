@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(apiRouter);
 
 sequelize.sync(
+  {force: true}
 )
   .then( () => console.log("conncted to database") )
   .catch( (err) => console.log("connection failed", err) );

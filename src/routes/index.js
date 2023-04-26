@@ -9,6 +9,7 @@ const authRouter = require('./auth/auth.router');
 const customerRouter = require('./customer/customer.router');
 const invoiceRouter = require('./invoice/invoice.router');
 const invoicedetailRouter = require('./invoicedetail/invoicedetail.router');
+const discountRouter = require('./discount/discount.router');
 
 
 const {requireAuth} = require('../middleware/auth.middleware');
@@ -23,6 +24,7 @@ router.use('/users', requireAuth, userRouter);
 router.use('/customers', requireAuth, customerRouter);
 router.use('/invoices', requireAuth, invoiceRouter);
 router.use('/invoicedetails', requireAuth, invoicedetailRouter);
+router.use('/discounts', requireAuth, discountRouter);
 
 router.use('/', authRouter);
 

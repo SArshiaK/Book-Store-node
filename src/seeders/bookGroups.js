@@ -3,24 +3,28 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('Authors', [
+    return queryInterface.bulkInsert('Bgconnector', [
       {
-        authorName: 'Paulo Coelho',
+        BookId:1,
+        groupId:2,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'William Shakespeare',
+        BookId:1,
+        groupId:1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'Charles Dickens ',
+        BookId:1,
+        groupId:3,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'Fyodor Dostoevsky',
+        BookId:2,
+        groupId:2,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -28,6 +32,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('Authors', null, {});
+    return queryInterface.bulkDelete('Bgconnector', null, {});
   }
 };
