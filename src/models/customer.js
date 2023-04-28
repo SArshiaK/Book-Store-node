@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models){
             Customer.hasMany(models.Invoice, {as: 'invoices'});
             Customer.belongsTo(models.User, {foreignKey: 'UserId', onUpdate: 'cascade', onDelete: 'cascade'})
-            Customer.hasMany(models.Discount);
         }
     }
     Customer.init({

@@ -5,11 +5,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Discount extends Model{
         static associate(models){
-            Discount.belongsTo(models.Customer, {foreignKey: 'CustomerId', onUpdate: 'cascade', onDelete: 'cascade'});
-            Discount.belongsTo(models.Book, {foreignKey: 'BookId', onUpdate: 'cascade', onDelete: 'cascade'});
-            // Discount.hasMany(models.Bgconnector, {as: 'connections'});
-            // Discount.hasMany(models.InvoiceDetail);
-            // Discount.hasOne(models.Group)
+            Discount.hasOne(models.Invoice)
         }
     }
     Discount.init({
@@ -40,14 +36,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.DATE,
         },
-        CustomerId: {
-            allowNull: true,
-            type: DataTypes.INTEGER
-        },
-        BookId:{
-            allowNull: true,
-            type: DataTypes.INTEGER
-        }
     },
     {
         sequelize,

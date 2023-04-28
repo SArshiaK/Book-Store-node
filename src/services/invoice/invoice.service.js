@@ -1,18 +1,28 @@
 const { Invoice } = require('../../models');
 const { InvoiceDetail } = require('../../models');
 const { Book } = require('../../models');
-const { Author } = require('../../models')
+const { Author } = require('../../models');
+const { Discount } = require('../../models');
+
 
 const { sequelize } = require("../../models");
 
-async function createInvoice(userId, customerId, date, paymentType, invoiceNumber) {
+async function createInvoice(userId, customerId, date, paymentType, invoiceNumber, discountCode=null) {
+    var discountId = null
+    if(discountCode != null){
+        const discount = await Discount.findOne({where: {code: discountCode}});
+        if(!discount)
+            throw new Error('Invalid discount code!');
+        discountId = discount.id
+    }
     const invoice = await Invoice.create({
         userId: userId,
         CustomerId: customerId,
         date: date,
         paymentType: paymentType,
         invoiceNumber: invoiceNumber,
-        netPrice: 0
+        netPrice: 0,
+        DiscountId: discountId
     })
     return invoice
 }

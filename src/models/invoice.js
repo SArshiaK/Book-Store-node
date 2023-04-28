@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
             // Invoice.hasOne(models.CiConnector, {foreignKey: 'invoiceId', as: 'invId'});
             Invoice.belongsTo(models.Customer, {foreignKey: 'CustomerId', as: 'invoices', onUpdate: 'cascade', onDelete: 'cascade'});
             Invoice.hasMany(models.InvoiceDetail, {foreignKey: 'invoiceId'});
+            Invoice.belongsTo(models.Discount, {foreignKey: 'DiscountId', onUpdate: 'cascade', onDelete: 'cascade'}, );
 
         }
     }
@@ -43,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.INTEGER
         },
+        DiscountId: {
+            allowNull: true,
+            type: DataTypes.INTEGER
+        }
     },
     {
         sequelize,

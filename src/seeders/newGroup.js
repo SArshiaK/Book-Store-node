@@ -24,6 +24,26 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       },
+      {
+        groupName: 'Non-fiction',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        groupName: 'Fiction',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        groupName: 'Biography',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        groupName: 'Mystery',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
     ]);
   },
 

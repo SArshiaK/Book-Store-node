@@ -34,10 +34,11 @@ async function httpCreateInvoice(req, res){
 
     let persiandate = new Date().toLocaleDateString('fa-IR-u-nu-latn');
     try {
-        const invoice = await invoiceService.createInvoice(user.id, params.customerId, persiandate, params.paymentType, invoiceNumber);
+        const invoice = await invoiceService.createInvoice(user.id, params.customerId, persiandate, params.paymentType, invoiceNumber, params.discountCode);
         return res.status(201).json({success: true, message: 'Invoice created', data: invoice});
     } catch (err) {
-        res.status(400).json({success: false, message: err})
+        // console.log(err)
+        res.status(400).json({success: false, message: err.message})
     }
 }
 

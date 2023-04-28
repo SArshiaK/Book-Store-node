@@ -3,54 +3,77 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('Authors', [
+    return queryInterface.bulkInsert('Bgconnectors', [
       {
-        authorName: 'Paulo Coelho',
+        BookId:1,
+        groupId:2,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'William Shakespeare',
+        BookId:1,
+        groupId:1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'Charles Dickens ',
+        BookId:1,
+        groupId:3,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'Fyodor Dostoevsky',
+        BookId:2,
+        groupId:2,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'J. K. Rowling',
+        BookId:3,
+        groupId:2,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'Agatha Christie',
+        BookId:4,
+        groupId:2,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'George Orwell',
+        BookId:4,
+        groupId:6,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'Mark Twain',
+        BookId:8,
+        groupId:3,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'Margaret Atwood',
+        BookId:8,
+        groupId:8,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        authorName: 'Albert Camus',
+        BookId:7,
+        groupId:4,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+
+      {
+        BookId:7,
+        groupId:5,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        BookId:7,
+        groupId:6,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -58,6 +81,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('Authors', null, {});
+    return queryInterface.bulkDelete('Bgconnector', null, {});
   }
 };

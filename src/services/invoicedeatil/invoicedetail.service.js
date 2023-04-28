@@ -43,7 +43,22 @@ async function createInvoiceDetail(bookId, invoiceId, quantity, discount) {
             { stock: changedStock },
             { where: { id: bookId }, transaction: t }
         )
-        await Invoice.increment('netPrice', { where: { id: invoiceId }, by: invoicedetail.totalPrice, transaction: t },);
+        var discountPercent = await sequelize.query(`
+            SELECT 
+                discounts.percent
+            FROM invoices
+            JOIN discounts
+            ON invoices.DiscountId = discounts.id
+            WHERE invoices.id = ${invoiceId}
+            `
+            , { transaction: t }
+        );
+        var totalprice = invoicedetail.totalPrice
+        if(discountPercent[0][0]){
+            discountPercent = discountPercent[0][0].percent;
+            totalprice -= (totalprice * discountPercent)/100;
+        }
+        await Invoice.increment('netPrice', { where: { id: invoiceId }, by: totalprice, transaction: t },);
 
         await t.commit();
         return invoicedetail;
