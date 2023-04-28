@@ -57,7 +57,7 @@ async function httpUpdateInvoice(req, res){
     const invoiceId = req.params.id
     const params = req.body
     try {
-        const updatedInvoice = await invoiceService.updateInvoice(invoiceId, params.customerId, params.date, params.paymentType);
+        const updatedInvoice = await invoiceService.updateInvoice(invoiceId, params.customerId, params.date, params.paymentType, params.DiscountId);
         res.status(201).json({success: true, message: 'Invoice Updated'})
     } catch (err) {
         res.status(400).json({success: true, message: err.message})

@@ -81,7 +81,18 @@ async function deleteInvoiceDetail(invoiceDetailId) {
             }
         })
 
-        await Invoice.decrement('netPrice', { where: { id: invoicedetail.invoiceId }, by: invoicedetail.totalPrice, transaction: t });
+        var discountPercent = await sequelize.query(`SELECT discounts.percent FROM invoices JOIN discounts
+            ON invoices.DiscountId = discounts.id
+            WHERE invoices.id = ${invoicedetail.invoiceId}
+            `
+            , { transaction: t }
+        );
+        var totalprice = invoicedetail.totalPrice
+        if(discountPercent[0][0]){
+            discountPercent = discountPercent[0][0].percent;
+            totalprice -= (totalprice * discountPercent)/100;
+        }
+        await Invoice.decrement('netPrice', { where: { id: invoicedetail.invoiceId }, by: totalprice, transaction: t });
 
         await Book.increment('stock', { where: { id: invoicedetail.BookId }, by: invoicedetail.quantity, transaction: t });
 

@@ -13,18 +13,31 @@ async function createInvoice(userId, customerId, date, paymentType, invoiceNumbe
         const discount = await Discount.findOne({where: {code: discountCode}});
         if(!discount)
             throw new Error('Invalid discount code!');
+        if(discount.active === false)
+            throw new Error('Code is not active');
         discountId = discount.id
     }
-    const invoice = await Invoice.create({
-        userId: userId,
-        CustomerId: customerId,
-        date: date,
-        paymentType: paymentType,
-        invoiceNumber: invoiceNumber,
-        netPrice: 0,
-        DiscountId: discountId
-    })
-    return invoice
+    const t = await sequelize.transaction();
+    try {
+        await Discount.update(
+            {active: false},
+            {where: {id: discountId}, transaction: t}
+        )
+        const invoice = await Invoice.create({
+            userId: userId,
+            CustomerId: customerId,
+            date: date,
+            paymentType: paymentType,
+            invoiceNumber: invoiceNumber,
+            netPrice: 0,
+            DiscountId: discountId
+        }, {transaction: t})
+        t.commit();
+        return invoice
+        
+    } catch (err) {
+        t.rollback();
+    }
 }
 
 async function getAllInvoices() {
@@ -118,7 +131,7 @@ async function deleteInvoice(invoiceId) {
 
 }
 
-async function updateInvoice(invoiceId, customerId = null, date = null, paymentType = null) {
+async function updateInvoice(invoiceId, customerId = null, date = null, paymentType = null, DiscountId=null) {
     const t = await sequelize.transaction();
     try {
         const invoice = await Invoice.findOne({ where: { id: invoiceId } });
@@ -128,12 +141,36 @@ async function updateInvoice(invoiceId, customerId = null, date = null, paymentT
             date = invoice.date
         if (paymentType === null)
             paymentType = invoice.paymentType
-
+        if(DiscountId === null){
+            DiscountId = invoice.DiscountId
+        }
+        else if(DiscountId === ''){
+            var netPrice = invoice.netPrice
+            if(invoice.DiscountId){
+                const oldDiscount = await Discount.findOne({where: {id: invoice.DiscountId}, transaction: t});
+                await Discount.update({active: true},{where: {id: invoice.DiscountId}, transaction: t});
+                netPrice = (netPrice * 100) / (100 - oldDiscount.percent)
+                DiscountId = null
+            }
+        }
+        else if(DiscountId != null){
+            var netPrice = invoice.netPrice
+            if(invoice.DiscountId){
+                const oldDiscount = await Discount.findOne({where: {id: invoice.DiscountId}, transaction: t});
+                await Discount.update({active: true},{where: {id: invoice.DiscountId}, transaction: t});
+                netPrice = (netPrice * 100) / (100 - oldDiscount.percent)
+            }
+            const newDiscount = await Discount.findOne({where: {id: DiscountId}, transaction: t});
+            await Discount.update({active: false},{where: {id: DiscountId}, transaction: t});
+            netPrice = (netPrice * (100 - newDiscount.percent)) / 100;
+        }
         const updatedInvoice = await Invoice.update(
             {
                 CustomerId: customerId,
                 date: date,
-                paymentType: paymentType
+                paymentType: paymentType,
+                DiscountId: DiscountId,
+                netPrice: netPrice
             },
             { where: { id: invoiceId }, transaction: t }
         )
