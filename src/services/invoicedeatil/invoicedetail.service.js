@@ -66,7 +66,7 @@ async function createInvoiceDetail(bookId, invoiceId, quantity, discount) {
     } catch (err) {
         // console.log(err);
         await t.rollback();
-        return err;
+        throw new Error(err)
     }
 }
 
@@ -117,7 +117,7 @@ async function deleteInvoiceDetail(invoiceDetailId) {
         await t.commit();
     } catch (err) {
         await t.rollback();
-        return err;
+        throw new Error(err)
     }
 
 }

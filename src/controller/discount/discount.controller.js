@@ -24,7 +24,21 @@ async function httpGetAllCodes(req, res){
     }
 }
 
+async function httpDeleteDiscount(req, res){
+    const discountId = req.params.id
+    try {
+        await discountService.deleteCode(discountId);
+        res.status(200).json({success: true, message: 'Discount Deleted'});
+        
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({success: false, message: err.message});
+        
+    }
+}
+
 module.exports = {
     httpCreateDiscount,
-    httpGetAllCodes
+    httpGetAllCodes,
+    httpDeleteDiscount,
 }

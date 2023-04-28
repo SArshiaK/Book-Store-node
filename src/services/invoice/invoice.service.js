@@ -37,6 +37,7 @@ async function createInvoice(userId, customerId, date, paymentType, invoiceNumbe
         
     } catch (err) {
         t.rollback();
+        throw new Error(err);
     }
 }
 
@@ -126,7 +127,7 @@ async function deleteInvoice(invoiceId) {
     } catch (err) {
         console.log(err)
         await t.rollback();
-        return err;
+        throw new Error(err);
     }
 
 }
@@ -179,7 +180,7 @@ async function updateInvoice(invoiceId, customerId = null, date = null, paymentT
 
     } catch (err) {
         t.rollback();
-        return err;
+        throw new Error(err);
     }
 }
 
