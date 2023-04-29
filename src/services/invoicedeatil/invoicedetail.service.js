@@ -11,17 +11,25 @@ async function calculateNetprice(invoiceId, t) {
         attributes: [],
         include: [{
             model: Discount,
-            attributes: ['percent']
+            attributes: ['percent', 'upTo']
         }],
         where: {
             id: invoiceId
         },
         transaction: t
     })
+    console.log(invoice.dataValues.Discount.dataValues)
 
     const percent = invoice.dataValues.Discount.dataValues.percent;
+    const upTo = invoice.dataValues.Discount.upTo
 
     const netPrice = (total * (100 - percent)) / 100;
+
+    if(upTo && total - netPrice > upTo){
+        console.log(total - netPrice)
+        throw new Error('Discount is over the limit')
+    }
+
 
     await Invoice.update(
         { netPrice: netPrice },
@@ -74,7 +82,7 @@ async function createInvoiceDetail(bookId, invoiceId, quantity, discount) {
     } catch (err) {
         // console.log(err);
         await t.rollback();
-        throw new Error(err)
+        throw new Error(err);
     }
 }
 
