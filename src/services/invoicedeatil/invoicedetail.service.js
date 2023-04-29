@@ -1,14 +1,35 @@
-const { InvoiceDetail } = require('../../models');
-const { Book } = require('../../models')
-const { Invoice } = require('../../models')
-
-const { sequelize } = require("../../models");
+const { InvoiceDetail, Book, Invoice, Discount, sequelize } = require('../../models');
 
 async function getInvoiceDetailesByInvoiceId(invoiceId) {
     const invoiceDetailes = await InvoiceDetail.findAll({ where: { invoiceId } })
     return invoiceDetailes
 }
 
+async function calculateNetprice(invoiceId, t) {
+    const total = await InvoiceDetail.sum('totalPrice', { where: { invoiceId: invoiceId }, transaction: t });
+    const invoice = await Invoice.findOne({
+        attributes: [],
+        include: [{
+            model: Discount,
+            attributes: ['percent']
+        }],
+        where: {
+            id: invoiceId
+        },
+        transaction: t
+    })
+
+    const percent = invoice.dataValues.Discount.dataValues.percent;
+
+    const netPrice = (total * (100 - percent)) / 100;
+
+    await Invoice.update(
+        { netPrice: netPrice },
+        { where: { id: invoiceId }, transaction: t }
+    )
+
+
+}
 
 async function createInvoiceDetail(bookId, invoiceId, quantity, discount) {
     const t = await sequelize.transaction();
@@ -22,7 +43,6 @@ async function createInvoiceDetail(bookId, invoiceId, quantity, discount) {
         return 'Book not found';
     if (book.stock < quantity)
         return 'The requested quantity is greater than the stock';
-    
 
     try {
         const unitPrice = book.price
@@ -43,24 +63,12 @@ async function createInvoiceDetail(bookId, invoiceId, quantity, discount) {
             { stock: changedStock },
             { where: { id: bookId }, transaction: t }
         )
-        var discountPercent = await sequelize.query(`
-            SELECT 
-                discounts.percent
-            FROM invoices
-            JOIN discounts
-            ON invoices.DiscountId = discounts.id
-            WHERE invoices.id = ${invoiceId}
-            `
-            , { transaction: t }
-        );
-        var totalprice = invoicedetail.totalPrice
-        if(discountPercent[0][0]){
-            discountPercent = discountPercent[0][0].percent;
-            totalprice -= (totalprice * discountPercent)/100;
-        }
-        await Invoice.increment('netPrice', { where: { id: invoiceId }, by: totalprice, transaction: t },);
+
+        await calculateNetprice(invoiceId, t);
 
         await t.commit();
+
+
         return invoicedetail;
 
     } catch (err) {
@@ -81,18 +89,6 @@ async function deleteInvoiceDetail(invoiceDetailId) {
             }
         })
 
-        var discountPercent = await sequelize.query(`SELECT discounts.percent FROM invoices JOIN discounts
-            ON invoices.DiscountId = discounts.id
-            WHERE invoices.id = ${invoicedetail.invoiceId}
-            `
-            , { transaction: t }
-        );
-        var totalprice = invoicedetail.totalPrice
-        if(discountPercent[0][0]){
-            discountPercent = discountPercent[0][0].percent;
-            totalprice -= (totalprice * discountPercent)/100;
-        }
-        await Invoice.decrement('netPrice', { where: { id: invoicedetail.invoiceId }, by: totalprice, transaction: t });
 
         await Book.increment('stock', { where: { id: invoicedetail.BookId }, by: invoicedetail.quantity, transaction: t });
 
@@ -103,7 +99,7 @@ async function deleteInvoiceDetail(invoiceDetailId) {
             transaction: t
         })
         const invoiceDetails = await InvoiceDetail.findAll({ where: { invoiceId: invoicedetail.invoiceId }, transaction: t });
-    
+
         for (var i = 0; i < invoiceDetails.length; i++) {
             await InvoiceDetail.update({
                 row: i + 1
@@ -113,6 +109,7 @@ async function deleteInvoiceDetail(invoiceDetailId) {
                     transaction: t
                 })
         }
+        await calculateNetprice(invoicedetail.invoiceId, t);
 
         await t.commit();
     } catch (err) {

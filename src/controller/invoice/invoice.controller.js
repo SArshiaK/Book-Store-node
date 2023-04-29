@@ -45,8 +45,8 @@ async function httpCreateInvoice(req, res){
 async function httpDeleteInvoice(req, res){
     const invoiceId = req.params.id;
     try {
-        const x = await invoiceService.deleteInvoice(invoiceId);
-        res.status(201).json({success: true, message: 'Invoice Deleted', data: x})
+        await invoiceService.deleteInvoice(invoiceId);
+        res.status(201).json({success: true, message: 'Invoice Deleted'})
     } catch (err) {
         console.log(err)
         res.status(400).json({success: false, message: err.message});
@@ -57,7 +57,7 @@ async function httpUpdateInvoice(req, res){
     const invoiceId = req.params.id
     const params = req.body
     try {
-        const updatedInvoice = await invoiceService.updateInvoice(invoiceId, params.customerId, params.date, params.paymentType, params.DiscountId);
+        const updatedInvoice = await invoiceService.updateInvoice(invoiceId, params.customerId, params.date, params.paymentType);
         res.status(201).json({success: true, message: 'Invoice Updated'})
     } catch (err) {
         res.status(400).json({success: true, message: err.message})

@@ -1,4 +1,4 @@
-const { Discount, sequelize, Invoice } = require("../../models");
+const { Discount, sequelize } = require("../../models");
 
 async function generateCode(length) {
     var result = [];
@@ -24,57 +24,70 @@ async function createDiscount(active = true, percent, upTo = null, ExpirationDat
 }
 
 async function getAllCodes(active = null) {
-    if (active === null || active === undefined) return await Discount.findAll();
-    else if (active === "false") {
-        return await Discount.findAll({ where: { active: 0 } });
-    } else return await Discount.findAll({ where: { active: 1 } });
+
+
+    const where = {};
+
+    if (active)
+        where.active = parseInt(active) === 1;
+
+    return await Discount.findAll({ where });
+
 }
 
 async function deleteCode(discountId) {
-    const percent_id_netprice = await sequelize.query(
-        `
-        SELECT 
-            discounts.percent,
-            invoices.id,
-            invoices.netPrice
-        FROM discounts
-        JOIN invoices
-        ON discounts.id = invoices.DiscountId
-        WHERE discounts.id = ${discountId}
-    `
-    );
+
     const t = await sequelize.transaction();
     try {
-        if (percent_id_netprice) {
-            const percent = percent_id_netprice[0][0].percent;
-            const invoiceId = percent_id_netprice[0][0].id;
-            var netPrice = percent_id_netprice[0][0].netPrice;
-            console.log(netPrice);
-            netPrice = (netPrice * 100) / (100 - percent);
-            console.log(netPrice);
+        const discount = await Discount.findOne({where: {id: discountId}});
+        if(discount.active === false)
+            throw new Error('This code is not active');
 
-            await Invoice.update(
-                {
-                    DiscountId: null,
-                    netPrice: netPrice,
-                },
-
-                { where: { id: invoiceId }, transaction: t }
-            );
-            await Discount.destroy({
-                where: { id: discountId },
-                transaction: t
-            });
-        }
+        await Discount.destroy({
+            where: { id: discountId },
+            transaction: t
+        });
         t.commit();
     } catch (err) {
         await t.rollback();
+        throw new Error(err);
+    }
+}
+
+async function updateDiscount(discountId, active = null, percent = null, upTo = null, ExpirationDate = null) {
+    const t = await sequelize.transaction();
+
+    const discount = await Discount.findOne({where: {id: discountId}});
+    if(discount.active === false)
+        throw new Error('This code is not active');
+
+    if (active === null)
+        active = discount.active
+    if (percent === null)
+        percent = discount.percent
+    if (upTo === null)
+        upTo = discount.upTo
+    if (ExpirationDate === null)
+        ExpirationDate = discount.ExpirationDate
+
+
+    try {
+        await Discount.update(
+            { active, percent, upTo, ExpirationDate },
+            { where: { id: discountId }, transaction: t }
+        )
+        t.commit();
+
+    } catch (err) {
+        t.rollback();
         throw new Error(err)
     }
+
 }
 
 module.exports = {
     getAllCodes,
     createDiscount,
     deleteCode,
+    updateDiscount
 };

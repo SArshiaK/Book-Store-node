@@ -60,6 +60,10 @@ async function getAllInvoices() {
                 },
                 ]
             },
+            {
+                model: Discount,
+                required: false,
+            },
         ]
     });
     return invoices
@@ -91,7 +95,11 @@ async function getInvoiceById(invoiceId) {
 
 async function deleteInvoice(invoiceId) {
     const t = await sequelize.transaction();
-
+    // const invoice = await Invoice.findOne({
+    //     where: { id: invoiceId }
+    // });
+    
+    // const discountId = invoice.DiscountId;
     try {
         // const invoiceDetails = await InvoiceDetail.findAll({
         //     where: {
@@ -122,17 +130,21 @@ async function deleteInvoice(invoiceId) {
             transaction: t
         })
 
+        // await Discount.update(
+        //     {active: true},
+        //     {where: {id: discountId}, transaction: t}
+        // )
+
         await t.commit();
         return
     } catch (err) {
-        console.log(err)
         await t.rollback();
         throw new Error(err);
     }
 
 }
 
-async function updateInvoice(invoiceId, customerId = null, date = null, paymentType = null, DiscountId=null) {
+async function updateInvoice(invoiceId, customerId = null, date = null, paymentType = null) {
     const t = await sequelize.transaction();
     try {
         const invoice = await Invoice.findOne({ where: { id: invoiceId } });
@@ -142,35 +154,35 @@ async function updateInvoice(invoiceId, customerId = null, date = null, paymentT
             date = invoice.date
         if (paymentType === null)
             paymentType = invoice.paymentType
-        if(DiscountId === null){
-            DiscountId = invoice.DiscountId
-        }
-        else if(DiscountId === ''){
-            var netPrice = invoice.netPrice
-            if(invoice.DiscountId){
-                const oldDiscount = await Discount.findOne({where: {id: invoice.DiscountId}, transaction: t});
-                await Discount.update({active: true},{where: {id: invoice.DiscountId}, transaction: t});
-                netPrice = (netPrice * 100) / (100 - oldDiscount.percent)
-                DiscountId = null
-            }
-        }
-        else if(DiscountId != null){
-            var netPrice = invoice.netPrice
-            if(invoice.DiscountId){
-                const oldDiscount = await Discount.findOne({where: {id: invoice.DiscountId}, transaction: t});
-                await Discount.update({active: true},{where: {id: invoice.DiscountId}, transaction: t});
-                netPrice = (netPrice * 100) / (100 - oldDiscount.percent)
-            }
-            const newDiscount = await Discount.findOne({where: {id: DiscountId}, transaction: t});
-            await Discount.update({active: false},{where: {id: DiscountId}, transaction: t});
-            netPrice = (netPrice * (100 - newDiscount.percent)) / 100;
-        }
+        // if(DiscountId === null){
+        //     DiscountId = invoice.DiscountId
+        // }
+        // else if(DiscountId === ''){
+        //     var netPrice = invoice.netPrice
+        //     if(invoice.DiscountId){
+        //         const oldDiscount = await Discount.findOne({where: {id: invoice.DiscountId}, transaction: t});
+        //         await Discount.update({active: true},{where: {id: invoice.DiscountId}, transaction: t});
+        //         netPrice = (netPrice * 100) / (100 - oldDiscount.percent)
+        //         DiscountId = null
+        //     }
+        // }
+        // else if(DiscountId != null){
+        //     var netPrice = invoice.netPrice
+        //     if(invoice.DiscountId){
+        //         const oldDiscount = await Discount.findOne({where: {id: invoice.DiscountId}, transaction: t});
+        //         await Discount.update({active: true},{where: {id: invoice.DiscountId}, transaction: t});
+        //         netPrice = (netPrice * 100) / (100 - oldDiscount.percent)
+        //     }
+        //     const newDiscount = await Discount.findOne({where: {id: DiscountId}, transaction: t});
+        //     await Discount.update({active: false},{where: {id: DiscountId}, transaction: t});
+        //     netPrice = (netPrice * (100 - newDiscount.percent)) / 100;
+        // }
         const updatedInvoice = await Invoice.update(
             {
                 CustomerId: customerId,
                 date: date,
                 paymentType: paymentType,
-                DiscountId: DiscountId,
+                // DiscountId: DiscountId,
                 netPrice: netPrice
             },
             { where: { id: invoiceId }, transaction: t }

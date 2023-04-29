@@ -4,7 +4,7 @@ async function httpCreateDiscount(req, res){
     const params = req.body;
     // console.log(params)
 
-    try {
+    try {        
         const discount = await discountService.createDiscount(params.active, params.percent, params.upTo, params.expirationDate);
         res.status(201).json({success: true, message: 'Discount Created', data: discount});
     } catch (err) {
@@ -37,8 +37,22 @@ async function httpDeleteDiscount(req, res){
     }
 }
 
+async function httpUpdateDiscount(req, res){
+    const discountId = req.params.id
+    const params = req.body
+
+    try {
+        await discountService.updateDiscount(discountId, params.active, params.percent, params.upTo, params.expirationDate);
+        res.status(200).json({success: true, message: 'Discount Updated'});
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({success: false, message: err.message});
+    }
+}
+
 module.exports = {
     httpCreateDiscount,
     httpGetAllCodes,
     httpDeleteDiscount,
+    httpUpdateDiscount
 }
