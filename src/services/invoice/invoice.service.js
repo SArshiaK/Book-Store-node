@@ -196,6 +196,7 @@ async function updateInvoice(invoiceId, customerId = null, date = null, paymentT
     }
 }
 
+
 module.exports = {
     createInvoice,
     getAllInvoices,
