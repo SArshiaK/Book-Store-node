@@ -7,6 +7,7 @@ async function getInvoiceDetailesByInvoiceId(invoiceId) {
 
 async function calculateNetprice(invoiceId, t) {
     const total = await InvoiceDetail.sum('totalPrice', { where: { invoiceId: invoiceId }, transaction: t });
+    console.log(total)
     const invoice = await Invoice.findOne({
         attributes: [],
         include: [{
@@ -18,16 +19,15 @@ async function calculateNetprice(invoiceId, t) {
         },
         transaction: t
     })
-    console.log(invoice.dataValues.Discount.dataValues)
+    console.log(invoice.Discount)
 
-    const percent = invoice.dataValues.Discount.dataValues.percent;
-    const upTo = invoice.dataValues.Discount.upTo
+    const {percent, upTo} = invoice.Discount;
 
-    const netPrice = (total * (100 - percent)) / 100;
+    var netPrice = (total * (100 - percent)) / 100;
 
     if(upTo && total - netPrice > upTo){
-        console.log(total - netPrice)
-        throw new Error('Discount is over the limit')
+        netPrice = (netPrice * 100) / (100 - percent);
+        netPrice = netPrice - upTo;
     }
 
 
